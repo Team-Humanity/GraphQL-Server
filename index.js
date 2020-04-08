@@ -8,6 +8,7 @@ const typeDefs = gql`
     email: String!
     about: String
     address: Address
+    profilePicture: ProfilePicture!
   }
 
   type Address {
@@ -18,11 +19,44 @@ const typeDefs = gql`
     stateAbbr: String
   }
 
+  type ProfilePicture {
+    fileName: String!
+  }
+
+  input UserInput {
+    id: String!
+    firstName: String!
+    lastName: String!
+    age: Int
+    about: String!
+    email: String!
+    profilePicture: ProfilePictureInput!
+    address: AddressInput!
+  }
+
+  input ProfilePictureInput {
+    fileName: String!
+  }
+
+  input AddressInput {
+    streetAddress: String!
+    aptSuit: String
+    state: String!
+    zipCode: Int!
+    stateAbbr: String
+  }
+
   type Query {
     user: User
   }
+
+  type Mutation {
+    createProfile(user: UserInput!): User!
+  }
+
   schema {
     query: Query
+    mutation: Mutation
   }
 `;
 
@@ -39,13 +73,16 @@ const resolvers = {
         address: {
           streetAddress: '123 marigold lane',
           state: 'GA',
-          zipCode: 123456
+          zipCode: 123456,
+        },
+        profilePicture: {
+          fileName: "fileSave.txt"
         }
       };
-    }
-  }
+    },
+  },
 };
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ cors: { origin: '*' }, typeDefs, resolvers });
 server.listen().then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
 });
