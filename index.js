@@ -1,22 +1,23 @@
 const { ApolloServer, gql } = require('apollo-server');
+const { Console } = require('console');
+
 const typeDefs = gql`
   type User {
-    id: ID!
+    id: ID
     firstName: String!
     lastName: String!
     age: Int
     email: String!
-    about: String
-    address: Address
-    profilePicture: ProfilePicture!
+    address: Address!
+    picture: ProfilePicture!
   }
 
   type Address {
     streetAddress: String!
     aptSuit: String
-    state: String!
+    city: String!
     zipCode: Int!
-    stateAbbr: String
+    stateAbbr: String!
   }
 
   type ProfilePicture {
@@ -28,9 +29,8 @@ const typeDefs = gql`
     firstName: String!
     lastName: String!
     age: Int
-    about: String!
     email: String!
-    profilePicture: ProfilePictureInput!
+    profilePicture: ProfilePictureInput
     address: AddressInput!
   }
 
@@ -41,7 +41,7 @@ const typeDefs = gql`
   input AddressInput {
     streetAddress: String!
     aptSuit: String
-    state: String!
+    city: String!
     zipCode: Int!
     stateAbbr: String
   }
@@ -62,27 +62,41 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    user: () => {
-      return {
-        id: 123,
-        firstName: 'Tom',
-        lastName: 'Smith',
-        age: 26,
-        email: 'tom@fakemail.com',
-        about: '',
-        address: {
-          streetAddress: '123 marigold lane',
-          state: 'GA',
-          zipCode: 123456,
-        },
-        profilePicture: {
-          fileName: "fileSave.txt"
-        }
-      };
-    },
+    user: () => ({
+      id: 123,
+      firstName: 'Tom',
+      lastName: 'Smith',
+      age: 26,
+      email: 'tom@fakemail.com',
+      address: {
+        streetAddress: '123 marigold lane',
+        stateAbbr: 'GA',
+        zipCode: 123456,
+      },
+      picture: {
+        fileName: 'fileSave.txt',
+      },
+    }),
+  },
+  Mutation: {
+    createProfile: () => ({
+      id: 123,
+      firstName: 'Jay',
+      lastName: 'Smith',
+      age: 26,
+      email: 'tom@fakemail.com',
+      address: {
+        streetAddress: '123 marigold lane',
+        stateAbbr: 'GA',
+        zipCode: 123456,
+      },
+      picture: {
+        fileName: 'fileSave.txt',
+      },
+    }),
   },
 };
 const server = new ApolloServer({ cors: { origin: '*' }, typeDefs, resolvers });
 server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
+  Console.log(`🚀  Server ready at ${url}`);
 });
